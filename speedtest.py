@@ -29,7 +29,10 @@ import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # 仓库公开后填入 IP 池的 raw 地址,即可实现"自动获取最新 IP 池"
-DEFAULT_POOL_URLS = []
+DEFAULT_POOL_URLS = [
+    "https://raw.githubusercontent.com/Jackson2516484/cf-speedtest/main/data/cf-ips-v4.txt",
+    "https://raw.githubusercontent.com/Jackson2516484/cf-speedtest/main/data/cf-ips-v6.txt",
+]
 DL_SIZE = 2 * 1024 * 1024  # 测速文件 2MB
 
 
