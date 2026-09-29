@@ -1,0 +1,32 @@
+name: IP 池健康检查
+
+# 每 6 小时检查一次候选 IP 是否存活,剔除失联 IP,不足时自动从官方段补充
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 检查并更新 IP 池
+        env:
+          PROBE_DOMAIN: ${{ vars.PROBE_DOMAIN }}
+        run: python3 .github/workflows/healthcheck.py
+
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || (git commit -m "chore: 自动更新可用 IP 池 [skip ci]" && git push)
